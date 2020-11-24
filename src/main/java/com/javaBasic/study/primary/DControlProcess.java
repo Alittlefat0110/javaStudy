@@ -1,6 +1,10 @@
 package com.javaBasic.study.primary;
 
-import java.util.Scanner;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
+
+import java.util.*;
 
 /**
  * 控制流程
@@ -339,10 +343,14 @@ class ControlProcess6{
         }
     }
 }
-
+@Slf4j
 class Practice {
     public static void main(String[] args) {
-        practice1();
+        //practice1();
+        //List<Integer> list=practice2();
+        //log.info(String.valueOf(list));
+        practice3();
+
     }
 
     /**
@@ -350,8 +358,9 @@ class Practice {
      * <p>
      * 分母和分子不能同时为偶数
      * 分母和分子 取值范围在[1-20]
+     * @return
      */
-    public static void practice1() {
+    public static float practice1() {
         /**
          * 思路：
          * 循环获得每一个分子/分母结果，用该结果减目标值，取绝对值最小的即为所求
@@ -367,6 +376,7 @@ class Practice {
                     continue;
                 }
                 float x = (float)i / j;
+                //取绝对值
                 float temp=Math.abs(x-h);
                 if (min>temp){
                     min=temp;
@@ -377,18 +387,76 @@ class Practice {
         }
         System.out.println(min);
         System.out.println((float)numerator/denominator);
+        return (float)numerator/denominator;
     }
 
-    public static void practice2(){
+    /**
+     * 寻找所有的水仙花数
+     * 水仙花数定义：
+     * 1. 一定是3位数
+     * 2. 每一位的立方，加起来恰好是这个数本身，比如153=1*1*1+5*5*5+3*3*3
+     * @return
+     */
+    public static List<Integer> practice2(){
+        int mcl=0;
+        List<Integer> list=new LinkedList<>();
+        for (int j=100;j<1000;j++) {
+            //将整数转为字符串
+            String s=String.valueOf(j);
+            //将字符串转为char数组
+            char[] s1=s.toCharArray();
 
+            for (int i = 0; i < s.length(); i++) {
+                //int i1 = s1[i]得到的是s1[i]的Ascii码值，此时强转不生效
+                //得到j的每一位数
+                 int i1 = s1[i]-'0';
+                mcl = mcl+(int)Math.pow(i1,3);
+            }
+            //System.out.println(j+"---"+mcl);
+            if (j==mcl){
+                list.add(mcl);
+            }
+            //重置mcl，不然会累加到下一次循环
+            mcl=0;
+        }
+        return list;
     }
+
+    /**
+     * 计算题
+     * a+b=8，c-d=6，a+c=14，b+d=10
+     * 求a,b,c,d的值
+     */
     public static void practice3(){
-
+        //方法一 控制变量
+        for (int a = 0; a < 8; a++)
+        {
+            int b = 8-a;
+            int c = 14-a;
+            int d = 10-b;
+            if(c == d+6)
+                log.info("a="+a+" "+"b="+b+" "+"c="+c+" "+"d="+d);
+//                System.out.format("%d  +  %d = 8\n"
+//                    + "+     +\n"
+//                    + "%d - %d = 6\n"
+//                    + "||   ||\n"
+//                    + "14   10", a, b, c, d );
+        }
+        //方法二，嵌套循环
+        Start://与break配合使用
+        for (int a=0;a<=8;a++){
+           for (int b=0;b<=10;b++){
+               for (int c=0;c<=14;c++){
+                   for (int d=0;d<=10;d++){
+                       if(a+b==8 &&c-d==6&&a+c==14&&b+d==10){
+                           System.out.println("a+b=8，c+d=6，a+c=14，b+d=10，求a,b,c,d的值");
+                           log.info("a="+a+" "+"b="+b+" "+"c="+c+" "+"d="+d);
+                           break Start;
+                       }
+                   }
+               }
+           }
+        }
     }
-    public static void practice5(){
 
-    }
-    public static void practice6(){
-
-    }
 }

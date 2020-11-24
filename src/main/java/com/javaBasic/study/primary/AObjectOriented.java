@@ -6,7 +6,7 @@ import java.util.*;
  * 类与对象，对象实例化
  * list set map的区别
  */
-public class AClassObject {
+public class AObjectOriented {
     String name;
     int price;
 
@@ -36,8 +36,8 @@ public class AClassObject {
 
     public static void main(String[] args){
         //实例化对象
-        List<AClassObject> list2=new ArrayList<>();
-        AClassObject bloodVial=new AClassObject();
+        List<AObjectOriented> list2=new ArrayList<>();
+        AObjectOriented bloodVial=new AObjectOriented();
         bloodVial.setName("血瓶");
         bloodVial.setPrice(50);
         list2.add(bloodVial);

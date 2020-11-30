@@ -56,7 +56,7 @@ class ADHero extends GInterface implements AD{
 /**
  * 魔法攻击类英雄
  */
-class APHero extends GInterface implements AP{
+ class APHero extends GInterface implements AP{
     @Override
     public void magicAttack() {
         System.out.println("进行魔法攻击");

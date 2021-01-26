@@ -1,9 +1,8 @@
-package com.javaBasic.study.intermediate.collection;
+package com.javaBasic.study.intermediate.collection.anotherCollection;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.Console;
 import java.util.*;
 
 /**

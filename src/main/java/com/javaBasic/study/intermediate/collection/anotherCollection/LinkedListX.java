@@ -1,5 +1,6 @@
 package com.javaBasic.study.intermediate.collection.anotherCollection;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -96,20 +97,22 @@ class LinkedListY{
  * LinkedList实现Stack栈
  */
 class MyStack implements stack {
-    LinkedList<HeroX> ll = new LinkedList<>();
+    LinkedList<HeroX> l = new LinkedList<>();
+    //设为线程安全
+    LinkedList<HeroX> ll=(LinkedList<HeroX>) Collections.synchronizedList(l);
     //把英雄推入到最后位置
     @Override
-    public void push(HeroX h){
+    public synchronized void push(HeroX h){
         ll.addLast(h);
     }
-    //把最后一个英雄取出来
+    //把最后一个英雄取出来LinkedList<Hero> ll=(LinkedList<Hero>) Collections.synchronizedList(l);
     @Override
-    public HeroX pull(){
+    public synchronized HeroX pull(){
         return ll.removeLast();
     };
     //查看最后一个英雄
     @Override
-    public  HeroX  peek(){
+    public  synchronized HeroX  peek(){
         return ll.getLast();
     };
     /**
@@ -124,8 +127,12 @@ class MyStack implements stack {
         MyStack myStack = new MyStack();
         for (int i=0;i<=4;i++) {
             HeroX heroX = new HeroX("hero"+i);
+            //压入栈底
             myStack.push(heroX);
         }
+        //取出（从栈中删除）
+        myStack.pull();
+        //查看
         System.out.println(myStack.peek());
         myStack.pull();
         System.out.println(myStack.peek());
@@ -157,8 +164,17 @@ class HeroX {
     }
 
     // 重写toString方法
-    public String toString() {
-        return name;
-    }
+//    public String toString() {
+//        return name;
+//    }
 
+
+    @Override
+    public String toString() {
+        return "HeroX{" +
+                "name='" + name + '\'' +
+                ", hp=" + hp +
+                ", damage=" + damage +
+                '}';
+    }
 }

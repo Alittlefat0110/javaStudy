@@ -1,6 +1,5 @@
 package com.javaBasic.study.intermediate.thread;
 
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.io.*;
 import java.util.LinkedList;
@@ -21,8 +20,9 @@ public class threadPoolXY {
      * 4. 直到一个外部线程往这个任务容器中扔了一个“任务”，就会有一个消费者线程被唤醒notify
      * 5. 这个消费者线程取出“任务”，并且执行这个任务，执行完毕后，继续等待下一次任务的到来。
      * 6. 如果短时间内，有较多的任务加入，那么就会有多个线程被唤醒，去执行这些任务。
-     *
+     * <p>
      * 在整个过程中，都不需要创建新的线程，而是循环使用这些已经存在的线程
+     *
      * @param args
      */
     public static void main(String[] args) {
@@ -33,7 +33,7 @@ public class threadPoolXY {
             Runnable task = new Runnable() {
                 @Override
                 public void run() {
-                    System.out.println("执行任务"+ finalI);
+                    System.out.println("执行任务" + finalI);
                     //任务可能是打印一句话
                     //可能是访问文件
                     //可能是做排序
@@ -59,16 +59,16 @@ public class threadPoolXY {
  * 测试线程池
  * 创造一个情景，每个任务执行的时间都是1秒
  * 刚开始是间隔1秒钟向线程池中添加任务
- *
+ * <p>
  * 然后间隔时间越来越短，执行任务的线程还没有来得及结束，新的任务又来了。
  * 就会观察到线程池里的其他线程被唤醒来执行这些任务
  */
 class TestThread {
     public static void main(String[] args) {
-        ThreadPool pool= new ThreadPool();
-        int sleep=1000;
-        while(true){
-            pool.add(new Runnable(){
+        ThreadPool pool = new ThreadPool();
+        int sleep = 1000;
+        while (true) {
+            pool.add(new Runnable() {
                 @Override
                 public void run() {
                     //System.out.println("执行任务");
@@ -82,7 +82,7 @@ class TestThread {
             });
             try {
                 Thread.sleep(sleep);
-                sleep = sleep>100?sleep-100:sleep;
+                sleep = sleep > 100 ? sleep - 100 : sleep;
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -96,7 +96,7 @@ class TestThread {
 /**
  * 开发一个自定义线程池
  * 这是一个自定义的线程池，虽然不够完善和健壮，但是已经足以说明线程池的工作原理
- *
+ * <p>
  * 缓慢的给这个线程池添加任务，会看到有多条线程来执行这些任务。
  * 线程7执行完毕任务后，又回到池子里，下一次任务来的时候，线程7又来执行新的任务。
  */
@@ -179,16 +179,16 @@ class TestThreadPool {
          */
 //        ThreadPoolTaskExecutor threadPoolTaskExecutor=new ThreadPoolTaskExecutor();
 //        threadPoolTaskExecutor.setCorePoolSize(10);
-        ThreadPoolExecutor threadPool= new ThreadPoolExecutor(10, 15,
+        ThreadPoolExecutor threadPool = new ThreadPoolExecutor(10, 15,
                 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
-        threadPool.execute(new Runnable(){
+        threadPool.execute(new Runnable() {
             @Override
-            public void run(){
+            public void run() {
                 System.out.println("任务1");
             }
         });
-        threadPool.execute(()->System.out.println("任务2"));
+        threadPool.execute(() -> System.out.println("任务2"));
 //        threadPoolTaskExecutor.initialize();
 //        threadPoolTaskExecutor.execute(new Runnable(){
 //            @Override
@@ -207,7 +207,7 @@ class TestThreadPool {
  * 初始化一个大小是10的线程池
  * 遍历所有文件，当遍历到文件是.java的时候，创建一个查找文件的任务，把这个任务扔进线程池去执行，继续遍历下一个文件
  */
-class practiceG{
+class practiceG {
     public void search(File files, String search) throws InterruptedException, IOException {
         ThreadPoolExecutor threadPool = new ThreadPoolExecutor(10, 15, 60, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>());

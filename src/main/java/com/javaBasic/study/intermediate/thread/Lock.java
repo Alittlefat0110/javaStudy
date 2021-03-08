@@ -2,6 +2,10 @@ package com.javaBasic.study.intermediate.thread;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.javaBasic.study.intermediate.thread.Data.getVersion;
+
 /**
  * 死锁
  * 当业务比较复杂，多线程应用里有可能会发生死锁
@@ -162,3 +166,147 @@ class HeroTY{
     public int damage;
 
 }
+
+
+
+
+class BeiGuanSuo{
+    private static volatile int a = 0;
+    public static void main(String[] args) {
+        Thread[] threads = new Thread[5];
+        BeiGuanSuo t=new BeiGuanSuo();
+        //定义5个线程，每个线程加10
+        for (int i = 0; i < 5; i++) {
+            int finalI = i;
+            threads[i] = new Thread(() -> {
+                synchronized (t) {
+                    try {
+                        for (int j = 0; j < 10; j++) {
+                            System.out.println(threads[finalI].getName() + "-" + j + ": " + ++a);
+                            Thread.sleep(500);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            threads[i].start();
+        }
+    }
+}
+
+
+
+
+class BuJiaSuo {
+    //一个变量a
+    private static volatile int a = 0;
+
+    public static void main(String[] args) {
+        BuJiaSuo test = new BuJiaSuo();
+        Thread[] threads = new Thread[5];
+        //定义5个线程，每个线程加10
+        for (int i = 0; i < 5; i++) {
+            threads[i] = new Thread(() -> {
+                try {
+                    for (int j = 0; j < 10; j++) {
+                        System.out.println(a++);
+                        Thread.sleep(500);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            threads[i].start();
+        }
+    }
+}
+
+
+class LeGuanSuo{
+    //使用AtomicInteger定义a
+    static AtomicInteger a = new AtomicInteger();
+    public static void main(String[] args) {
+        LeGuanSuo test = new LeGuanSuo();
+        Thread[] threads = new Thread[5];
+        for (int i = 0; i < 5; i++) {
+            int finalI =i;
+            threads[i] = new Thread(() -> {
+                try {
+                    for (int j = 0; j < 10; j++) {
+                        //使用getAndIncrement函数进行自增操作
+                        System.out.println(threads[finalI].getName() + "-" + j + ": " +a.incrementAndGet());
+                        Thread.sleep(500);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            threads[i].start();
+        }
+    }
+}
+
+
+
+class Data {
+    //数据版本号
+    static int version = 1;
+    //真实数据
+    static String data = "java的架构师技术栈";
+
+    public static int getVersion() {
+        return version;
+    }
+
+    public static void updateVersion() {
+        version = version + 1;
+    }
+}
+
+class OptimThread extends Thread {
+    public int version;
+    public String data;
+
+    public OptimThread(String valueOf, int version, String data) {
+        this.version=version;
+        this.data=data;
+    }
+
+
+    //构造方法和getter、setter方法
+    public void run() {
+        // 1.读数据
+        String text = Data.data;
+        System.out.println("线程" + getName() + "，获得的数据版本号为：" + getVersion());
+        System.out.println("线程" + getName() + "，预期的数据版本号为：" + getVersion());
+        System.out.println("线程" + getName() + "读数据完成=========data = " + text);
+        // 2.写数据：预期的版本号和数据版本号一致，那就更新
+        if (getVersion() == getVersion()) {
+            System.out.println("线程" + getName() + "，版本号为：" + version + "，正在操作数据");
+            synchronized (OptimThread.class) {
+                if (getVersion() == this.version) {
+                    Data.data = this.data;
+                    Data.updateVersion();
+                    System.out.println("线程" + getName() + "写数据完成=========data = " + this.data);
+                    return;
+                }
+            }
+
+        } else {
+            // 3. 版本号不正确的线程，需要重新读取，重新执行
+            System.out.println("线程" + getName() + "，获得的数据版本号为：" + getVersion());
+            System.out.println("线程" + getName() + "，预期的版本号为：" + getVersion());
+            System.err.println("线程" + getName() + "，需要重新执行。==============");
+        }
+    }
+}
+
+class Test {
+    public static void main(String[] args) {
+        for (int i = 1; i <=4; i++) {
+            new OptimThread(String.valueOf(i), 1, "fdd").start();
+        }
+    }
+}
+
